@@ -38,7 +38,34 @@ contract DeployGameSessionNft is Script {
 
     function mintNftOnContract(address basicNftAddress) public {
         vm.startBroadcast();
-        GameSessionNft(basicNftAddress).mintNft(ACTIVE_URI);
+        GameSessionNft(basicNftAddress).mintNftActive(ACTIVE_URI);
+        vm.stopBroadcast();
+    }
+}
+
+contract MintGameSessionNft is Script {
+    string public constant ACTIVE_URL =
+        "https://bafkreiapzeyrdkua4x7fkzfcdnbxro5bh2kzqqfta5knstzo54ittisbga.ipfs.nftstorage.link/";
+
+    string public constant COMPLETE_URL =
+        "https://bafkreih3uethjok3wtnyyg6knpc3oyko4lc5cehs4nx6qvmmsgnu6qebgm.ipfs.nftstorage.link/";
+    uint256 deployerKey;
+
+    function run() external {
+        address mostRecentlyDeployedBasicNft = DevOpsTools
+            .get_most_recent_deployment("GameSessionNft", block.chainid);
+        mintNftActiveSessionOnContract(mostRecentlyDeployedBasicNft);
+    }
+
+    function mintNftActiveSessionOnContract(address nftAddress) public {
+        vm.startBroadcast();
+        GameSessionNft(nftAddress).mintNftActive(ACTIVE_URL);
+        vm.stopBroadcast();
+    }
+
+    function mintNftCompletedSessionOnContract(address nftAddress) public {
+        vm.startBroadcast();
+        GameSessionNft(nftAddress).mintNftComplete(COMPLETE_URL);
         vm.stopBroadcast();
     }
 }

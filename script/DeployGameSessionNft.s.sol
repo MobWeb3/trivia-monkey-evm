@@ -18,7 +18,7 @@ contract DeployGameSessionNft is Script {
         vm.startBroadcast(deployerKey);
         GameSessionNft basicNft = new GameSessionNft();
         vm.stopBroadcast();
-        console.log("GameSessionNft address: %s", address(basicNft));
+        // console.log("GameSessionNft address: %s", address(basicNft));
         return basicNft;
     }
 }

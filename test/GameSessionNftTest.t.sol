@@ -6,7 +6,7 @@ import {DeployGameSessionNft} from "../script/DeployGameSessionNft.s.sol";
 import {GameSessionNft} from "../src/GameSessionNft.sol";
 import {Test, console} from "forge-std/Test.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
-import {MintBasicNft} from "../script/Interactions.s.sol";
+import {MintGameSessionNft} from "../script/Interactions.s.sol";
 
 contract GameSessionNftTest is StdCheats, Test {
     string constant NFT_NAME = "MonkeyTrivia NFT";
@@ -16,7 +16,11 @@ contract GameSessionNftTest is StdCheats, Test {
     address public deployerAddress;
 
     string public constant ACTIVE_URI =
-        "https://bafkreiapzeyrdkua4x7fkzfcdnbxro5bh2kzqqfta5knstzo54ittisbga.ipfs.nftstorage.link/";
+        "https://bafkreiapzeyrdkua4x7fkzfcdnbxro5bh2kzqqfta5knstzo54ittisbga.ipfs.nftstorage.link";
+
+    string public constant COMPLETE_URI =
+        "https://bafkreih3uethjok3wtnyyg6knpc3oyko4lc5cehs4nx6qvmmsgnu6qebgm.ipfs.nftstorage.link/";
+
     address public constant USER = address(1);
 
     function setUp() public {
@@ -35,29 +39,46 @@ contract GameSessionNftTest is StdCheats, Test {
         );
     }
 
-    // function testCanMintAndHaveABalance() public {
-    //     vm.prank(USER);
-    //     basicNft.mintNft(PUG_URI);
+    function testCanMintAndHaveABalance() public {
+        vm.prank(USER);
+        gameSessionNft.mintNftActive(ACTIVE_URI);
 
-    //     assert(basicNft.balanceOf(USER) == 1);
-    // }
+        assert(gameSessionNft.balanceOf(USER) == 1);
+    }
 
-    // function testTokenURIIsCorrect() public {
-    //     vm.prank(USER);
-    //     basicNft.mintNft(PUG_URI);
+    function testTokenActiveURIIsCorrect() public {
+        vm.prank(USER);
+        gameSessionNft.mintNftActive(ACTIVE_URI);
 
-    //     assert(
-    //         keccak256(abi.encodePacked(basicNft.tokenURI(0))) ==
-    //             keccak256(abi.encodePacked(PUG_URI))
-    //     );
-    // }
+        assert(
+            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0))) ==
+                keccak256(abi.encodePacked(ACTIVE_URI))
+        );
+    }
 
-    // function testMintWithScript() public {
-    //     uint256 startingTokenCount = basicNft.getTokenCounter();
-    //     MintBasicNft mintBasicNft = new MintBasicNft();
-    //     mintBasicNft.mintNftOnContract(address(basicNft));
-    //     assert(basicNft.getTokenCounter() == startingTokenCount + 1);
-    // }
+    function testTokenCompleteURIIsCorrect() public {
+        vm.prank(USER);
+        gameSessionNft.mintNftComplete(COMPLETE_URI);
 
-    // can you get the coverage up?
+        assert(
+            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0))) ==
+                keccak256(abi.encodePacked(COMPLETE_URI))
+        );
+    }
+
+    function testMintWithActiveSessionScript() public {
+        uint256 startingTokenCount = gameSessionNft.getTokenCounter();
+        MintGameSessionNft mintGameSessionNft = new MintGameSessionNft();
+        mintGameSessionNft.mintNftActiveSessionOnContract(address(gameSessionNft));
+        assert(gameSessionNft.getTokenCounter() == startingTokenCount + 1);
+        assert(gameSessionNft.getTokenIdToState(0) == GameSessionNft.NFTState.ACTIVE);
+    }
+
+    function testMintWithCompleteSessionScript() public {
+        uint256 startingTokenCount = gameSessionNft.getTokenCounter();
+        MintGameSessionNft mintGameSessionNft = new MintGameSessionNft();
+        mintGameSessionNft.mintNftCompletedSessionOnContract(address(gameSessionNft));
+        assert(gameSessionNft.getTokenCounter() == startingTokenCount + 1);
+        assert(gameSessionNft.getTokenIdToState(0) == GameSessionNft.NFTState.COMPLETE);
+    }
 }
