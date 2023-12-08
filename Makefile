@@ -56,3 +56,9 @@ flipMoodNft:
 
 deployGameSessionNft:
 	@forge script script/DeployGameSessionNft.s.sol:DeployGameSessionNft $(NETWORK_ARGS)
+
+mintGameSessionNft: # active session!
+	@forge script script/Interactions.s.sol:MintGameSessionNft $(NETWORK_ARGS)
+
+mintCompleteGameSessionNftBase64: # complete session!
+	@forge script script/Interactions.s.sol:MintCompleteGameSessionNftBase64 $(NETWORK_ARGS)
