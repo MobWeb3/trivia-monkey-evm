@@ -5,6 +5,7 @@ import {Script, console} from "forge-std/Script.sol";
 import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
 import {BasicNft} from "../src/BasicNft.sol";
 import {MoodNft} from "../src/MoodNft.sol";
+import {GameSessionNft} from "../src/GameSessionNft.sol";
 
 contract MintBasicNft is Script {
     string public constant PUG_URI =
@@ -20,6 +21,24 @@ contract MintBasicNft is Script {
     function mintNftOnContract(address basicNftAddress) public {
         vm.startBroadcast();
         BasicNft(basicNftAddress).mintNft(PUG_URI);
+        vm.stopBroadcast();
+    }
+}
+
+contract DeployGameSessionNft is Script {
+    string public constant ACTIVE_URI =
+        "https://bafkreiapzeyrdkua4x7fkzfcdnbxro5bh2kzqqfta5knstzo54ittisbga.ipfs.nftstorage.link/";
+    uint256 deployerKey;
+
+    function run() external {
+        address mostRecentlyDeployedBasicNft = DevOpsTools
+            .get_most_recent_deployment("GameSessionNft", block.chainid);
+        mintNftOnContract(mostRecentlyDeployedBasicNft);
+    }
+
+    function mintNftOnContract(address basicNftAddress) public {
+        vm.startBroadcast();
+        GameSessionNft(basicNftAddress).mintNft(ACTIVE_URI);
         vm.stopBroadcast();
     }
 }
