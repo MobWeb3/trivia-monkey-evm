@@ -38,14 +38,14 @@ contract GameSessionNft is ERC721, Ownable {
     uint256 private s_tokenCounter;
     mapping(uint256 tokenId => string tokenUri) private s_tokenIdToUri;
     mapping(uint256 => NFTState) private s_tokenIdToState;
-    
+
     event CreatedNFT(uint256 indexed tokenId);
 
     constructor() ERC721("MonkeyTrivia NFT", "MTSession") Ownable(msg.sender) {
         s_tokenCounter = 0;
     }
 
-   function mintNft(string memory tokenUri) private {
+    function mintNft(string memory tokenUri) private {
         s_tokenIdToUri[s_tokenCounter] = tokenUri;
         _safeMint(msg.sender, s_tokenCounter);
     }
@@ -62,7 +62,12 @@ contract GameSessionNft is ERC721, Ownable {
         s_tokenCounter = s_tokenCounter + 1;
     }
 
-    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override
+        returns (string memory)
+    {
         return s_tokenIdToUri[tokenId];
     }
 
@@ -70,7 +75,11 @@ contract GameSessionNft is ERC721, Ownable {
         return s_tokenCounter;
     }
 
-    function getTokenIdToState(uint256 tokenId) public view returns (NFTState) {
+    function getTokenIdToState(uint256 tokenId)
+        public
+        view
+        returns (NFTState)
+    {
         return s_tokenIdToState[tokenId];
     }
 }

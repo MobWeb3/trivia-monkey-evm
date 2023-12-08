@@ -31,12 +31,12 @@ contract GameSessionNftTest is StdCheats, Test {
 
     function testInitializedCorrectly() public view {
         assert(
-            keccak256(abi.encodePacked(gameSessionNft.name())) ==
-                keccak256(abi.encodePacked((NFT_NAME)))
+            keccak256(abi.encodePacked(gameSessionNft.name()))
+                == keccak256(abi.encodePacked((NFT_NAME)))
         );
         assert(
-            keccak256(abi.encodePacked(gameSessionNft.symbol())) ==
-                keccak256(abi.encodePacked((NFT_SYMBOL)))
+            keccak256(abi.encodePacked(gameSessionNft.symbol()))
+                == keccak256(abi.encodePacked((NFT_SYMBOL)))
         );
     }
 
@@ -52,8 +52,8 @@ contract GameSessionNftTest is StdCheats, Test {
         gameSessionNft.mintNftActive(ACTIVE_URI);
 
         assert(
-            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0))) ==
-                keccak256(abi.encodePacked(ACTIVE_URI))
+            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0)))
+                == keccak256(abi.encodePacked(ACTIVE_URI))
         );
     }
 
@@ -62,43 +62,61 @@ contract GameSessionNftTest is StdCheats, Test {
         gameSessionNft.mintNftComplete(COMPLETE_URI);
 
         assert(
-            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0))) ==
-                keccak256(abi.encodePacked(COMPLETE_URI))
+            keccak256(abi.encodePacked(gameSessionNft.tokenURI(0)))
+                == keccak256(abi.encodePacked(COMPLETE_URI))
         );
     }
 
     function testMintWithActiveSessionScript() public {
         uint256 startingTokenCount = gameSessionNft.getTokenCounter();
         MintGameSessionNft mintGameSessionNft = new MintGameSessionNft();
-        mintGameSessionNft.mintNftActiveSessionOnContract(address(gameSessionNft));
+        mintGameSessionNft.mintNftActiveSessionOnContract(
+            address(gameSessionNft)
+        );
         assert(gameSessionNft.getTokenCounter() == startingTokenCount + 1);
-        assert(gameSessionNft.getTokenIdToState(0) == GameSessionNft.NFTState.ACTIVE);
+        assert(
+            gameSessionNft.getTokenIdToState(0)
+                == GameSessionNft.NFTState.ACTIVE
+        );
     }
 
     function testMintWithCompleteSessionScript() public {
         uint256 startingTokenCount = gameSessionNft.getTokenCounter();
         MintGameSessionNft mintGameSessionNft = new MintGameSessionNft();
-        mintGameSessionNft.mintNftCompletedSessionOnContract(address(gameSessionNft));
+        mintGameSessionNft.mintNftCompletedSessionOnContract(
+            address(gameSessionNft)
+        );
         assert(gameSessionNft.getTokenCounter() == startingTokenCount + 1);
-        assert(gameSessionNft.getTokenIdToState(0) == GameSessionNft.NFTState.COMPLETE);
+        assert(
+            gameSessionNft.getTokenIdToState(0)
+                == GameSessionNft.NFTState.COMPLETE
+        );
     }
 
     function testJsonToUri() public pure {
-        string memory json = '{"name":"Monkey NFT", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", "attributes": [{"trait_type": "moodiness", "value": 100}], "image":"https://bafybeiho6hqlwn5t5al4puie4wvae5atjph4h2pmanegfyk2plb4r4sjbu.ipfs.nftstorage.link/"}';
+        string memory json =
+            '{"name":"Monkey NFT", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", "attributes": [{"trait_type": "moodiness", "value": 100}], "image":"https://bafybeiho6hqlwn5t5al4puie4wvae5atjph4h2pmanegfyk2plb4r4sjbu.ipfs.nftstorage.link/"}';
         string memory uri = jsonToURI(json);
         // console.log("uri: %s", uri);
         assert(
-            keccak256(abi.encodePacked(uri)) ==
-                keccak256(abi.encodePacked("data:application/json;base64,eyJuYW1lIjoiTW9ua2V5IE5GVCIsICJkZXNjcmlwdGlvbiI6IkFuIE5GVCB0aGF0IHJlZmxlY3RzIHRoZSBtb29kIG9mIHRoZSBvd25lciwgMTAwJSBvbiBDaGFpbiEiLCAiYXR0cmlidXRlcyI6IFt7InRyYWl0X3R5cGUiOiAibW9vZGluZXNzIiwgInZhbHVlIjogMTAwfV0sICJpbWFnZSI6Imh0dHBzOi8vYmFmeWJlaWhvNmhxbHduNXQ1YWw0cHVpZTR3dmFlNWF0anBoNGgycG1hbmVnZnlrMnBsYjRyNHNqYnUuaXBmcy5uZnRzdG9yYWdlLmxpbmsvIn0="))
+            keccak256(abi.encodePacked(uri))
+                == keccak256(
+                    abi.encodePacked(
+                        "data:application/json;base64,eyJuYW1lIjoiTW9ua2V5IE5GVCIsICJkZXNjcmlwdGlvbiI6IkFuIE5GVCB0aGF0IHJlZmxlY3RzIHRoZSBtb29kIG9mIHRoZSBvd25lciwgMTAwJSBvbiBDaGFpbiEiLCAiYXR0cmlidXRlcyI6IFt7InRyYWl0X3R5cGUiOiAibW9vZGluZXNzIiwgInZhbHVlIjogMTAwfV0sICJpbWFnZSI6Imh0dHBzOi8vYmFmeWJlaWhvNmhxbHduNXQ1YWw0cHVpZTR3dmFlNWF0anBoNGgycG1hbmVnZnlrMnBsYjRyNHNqYnUuaXBmcy5uZnRzdG9yYWdlLmxpbmsvIn0="
+                    )
+                )
         );
     }
 
-        // function to convert Json to URI using base64 encoding
-    function jsonToURI(string memory json) public pure returns (string memory) {
+    // function to convert Json to URI using base64 encoding
+    function jsonToURI(string memory json)
+        public
+        pure
+        returns (string memory)
+    {
         string memory baseURI = "data:application/json;base64,";
-        string memory jsonBase64Encoded = Base64.encode(
-            bytes(string(abi.encodePacked(json)))
-        );
+        string memory jsonBase64Encoded =
+            Base64.encode(bytes(string(abi.encodePacked(json))));
         return string(abi.encodePacked(baseURI, jsonBase64Encoded));
     }
 }
