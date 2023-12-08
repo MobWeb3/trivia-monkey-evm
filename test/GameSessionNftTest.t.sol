@@ -7,6 +7,7 @@ import {GameSessionNft} from "../src/GameSessionNft.sol";
 import {Test, console} from "forge-std/Test.sol";
 import {StdCheats} from "forge-std/StdCheats.sol";
 import {MintGameSessionNft} from "../script/Interactions.s.sol";
+import {Base64} from "@openzeppelin/contracts/utils/Base64.sol";
 
 contract GameSessionNftTest is StdCheats, Test {
     string constant NFT_NAME = "MonkeyTrivia NFT";
@@ -80,5 +81,24 @@ contract GameSessionNftTest is StdCheats, Test {
         mintGameSessionNft.mintNftCompletedSessionOnContract(address(gameSessionNft));
         assert(gameSessionNft.getTokenCounter() == startingTokenCount + 1);
         assert(gameSessionNft.getTokenIdToState(0) == GameSessionNft.NFTState.COMPLETE);
+    }
+
+    function testJsonToUri() public pure {
+        string memory json = '{"name":"Monkey NFT", "description":"An NFT that reflects the mood of the owner, 100% on Chain!", "attributes": [{"trait_type": "moodiness", "value": 100}], "image":"https://bafybeiho6hqlwn5t5al4puie4wvae5atjph4h2pmanegfyk2plb4r4sjbu.ipfs.nftstorage.link/"}';
+        string memory uri = jsonToURI(json);
+        // console.log("uri: %s", uri);
+        assert(
+            keccak256(abi.encodePacked(uri)) ==
+                keccak256(abi.encodePacked("data:application/json;base64,eyJuYW1lIjoiTW9ua2V5IE5GVCIsICJkZXNjcmlwdGlvbiI6IkFuIE5GVCB0aGF0IHJlZmxlY3RzIHRoZSBtb29kIG9mIHRoZSBvd25lciwgMTAwJSBvbiBDaGFpbiEiLCAiYXR0cmlidXRlcyI6IFt7InRyYWl0X3R5cGUiOiAibW9vZGluZXNzIiwgInZhbHVlIjogMTAwfV0sICJpbWFnZSI6Imh0dHBzOi8vYmFmeWJlaWhvNmhxbHduNXQ1YWw0cHVpZTR3dmFlNWF0anBoNGgycG1hbmVnZnlrMnBsYjRyNHNqYnUuaXBmcy5uZnRzdG9yYWdlLmxpbmsvIn0="))
+        );
+    }
+
+        // function to convert Json to URI using base64 encoding
+    function jsonToURI(string memory json) public pure returns (string memory) {
+        string memory baseURI = "data:application/json;base64,";
+        string memory jsonBase64Encoded = Base64.encode(
+            bytes(string(abi.encodePacked(json)))
+        );
+        return string(abi.encodePacked(baseURI, jsonBase64Encoded));
     }
 }
