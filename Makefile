@@ -39,6 +39,14 @@ ifeq ($(findstring --network sepolia,$(ARGS)),--network sepolia)
 	NETWORK_ARGS := --rpc-url $(SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
+ifeq ($(findstring --network mumbai,$(ARGS)),--network mumbai)
+    NETWORK_ARGS := --rpc-url $(MUMBAI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGONSCAN_API_KEY) -vvvv
+endif
+
+ifeq ($(findstring --network fuji,$(ARGS)),--network avalanche)
+    NETWORK_ARGS := --rpc-url $(AVALANCHE_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+endif
+
 deploy:
 	@forge script script/DeployBasicNft.s.sol:DeployBasicNft $(NETWORK_ARGS)
 
@@ -65,3 +73,6 @@ mintCompleteGameSessionNftBase64: # complete session!
 
 deploySourceMinter:
 	@forge script script/DeploySourceMinter.s.sol:DeploySourceMinter $(NETWORK_ARGS)
+
+deployDestinationMinter:
+	@forge script script/DeployDestinationMinter.s.sol:DeployDestinationMinter $(NETWORK_ARGS)

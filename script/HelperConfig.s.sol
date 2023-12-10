@@ -9,7 +9,6 @@ contract HelperConfig is Script {
     NetworkConfig public activeNetworkConfig;
 
     struct NetworkConfig {
-        address router;
         address link;
     }
 
@@ -21,12 +20,19 @@ contract HelperConfig is Script {
     uint256 public DEFAULT_ANVIL_PRIVATE_KEY =
         0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
-    event HelperConfig__CreatedMockVRFCoordinator(address vrfCoordinator);
+    // event HelperConfig__CreatedMockVRFCoordinator(address vrfCoordinator);
 
     constructor() {
         if (block.chainid == 11155111) {
             (activeNetworkConfig, ) = getSepoliaEthConfig();
-        } else {
+        } 
+        else if (block.chainid == 43113) {
+            (activeNetworkConfig, ) = getFujiAvalancheConfig();
+        }
+        else if (block.chainid == 80001) {
+            (activeNetworkConfig, ) = getMumbaiPolygonConfig();
+        }
+        else {
             // activeNetworkConfig = getOrCreateAnvilEthConfig();
         }
     }
@@ -37,7 +43,6 @@ contract HelperConfig is Script {
         returns (NetworkConfig memory mainnetNetworkConfig)
     {
         mainnetNetworkConfig = NetworkConfig({
-            router: 0x271682DEB8C4E0901D1a1550aD2e64D568E69909,
             link: 0x514910771AF9Ca656af840dff83E8264EcF986CA
         });
     }
@@ -49,13 +54,44 @@ contract HelperConfig is Script {
             RouterConfig memory sepoliaRouterConfig)
     {
         sepoliaNetworkConfig = NetworkConfig({
-            router: 0x8103B0A8A00be2DDC778e6e7eaa21791Cd364625,
             link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
         });
 
         sepoliaRouterConfig = RouterConfig({
             address_: 0xD0daae2231E9CB96b94C8512223533293C3693Bf,
             chainSelector: "16015286601757825753"
+        });
+    }
+
+    function getFujiAvalancheConfig()
+        public
+        pure
+        returns (NetworkConfig memory avalancheFujiNetworkConfig,
+            RouterConfig memory avalancheRouterConfig)
+    {
+        avalancheFujiNetworkConfig = NetworkConfig({
+            link: 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
+        });
+
+        avalancheRouterConfig = RouterConfig({
+            address_: 0x554472a2720E5E7D5D3C817529aBA05EEd5F82D8,
+            chainSelector: "14767482510784806043"
+        });
+    }
+
+        function getMumbaiPolygonConfig()
+        public
+        pure
+        returns (NetworkConfig memory polygonMumbaiNetworkConfig,
+            RouterConfig memory polygonMumbaiRouterConfig)
+    {
+        polygonMumbaiNetworkConfig = NetworkConfig({
+            link: 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+        });
+
+        polygonMumbaiRouterConfig = RouterConfig({
+            address_: 0x70499c328e1E2a3c41108bd3730F6670a44595D1,
+            chainSelector: "12532609583862916517"
         });
     }
 

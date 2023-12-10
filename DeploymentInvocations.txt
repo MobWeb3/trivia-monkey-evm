@@ -1,0 +1,22 @@
+forge test --match-contract GameSessionNftTest --fork-url $RPC_URL
+
+make deployGameSessionNft ARGS="--network sepolia"
+
+forge test --match-contract GameSessionNftTest --rpc-url $SEPOLIA_RPC_URL -vv
+forge test --rpc-url $SEPOLIA_RPC_URL
+
+make mintGameSessionNft ARGS="--network sepolia"
+
+make mintCompleteGameSessionNftBase64 ARGS="--network sepolia"
+
+
+make deployGameSessionNft ARGS="--network mumbai"
+
+make deployDestinationMinter ARGS="--network mumbai"
+
+
+
+
+forge verify-contract $ADDRESS $LOCATION --chain mumbai
+
+ forge verify-contract --chain-id 80001 0x094A595D7B541e5fEC91fd7B2355814A57165D0d src/GameSessionNft.sol:GameSessionNft --verifier-url https://mumbai.polygonscan.com/verifyContract --etherscan-api-key XK5ZVB1HBFNCWJQ66T83JZZN7K6H25UEXS
