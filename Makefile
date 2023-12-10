@@ -62,3 +62,6 @@ mintGameSessionNft: # active session!
 
 mintCompleteGameSessionNftBase64: # complete session!
 	@forge script script/Interactions.s.sol:MintCompleteGameSessionNftBase64 $(NETWORK_ARGS)
+
+deploySourceMinter:
+	@forge script script/DeploySourceMinter.s.sol:DeploySourceMinter $(NETWORK_ARGS)
