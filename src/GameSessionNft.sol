@@ -62,6 +62,15 @@ contract GameSessionNft is ERC721, Ownable {
         s_tokenCounter = s_tokenCounter + 1;
     }
 
+    function mint(address to) public {
+            string memory COMPLETE_URL =
+        "data:application/json;base64,ewogICAgIm5hbWUiOiAiTW9ua2V5IFRyaXZpYSBTZXNzaW9uIENvbXBsZXRlZCIsCiAgICAiZGVzY3JpcHRpb24iOiAiR2FtZSBzZXNzaWlvbiBjb21wbGV0ZWQuICBZb3UgYXJlIGEgd2lubmVyISIsCiAgICAiaW1hZ2UiOiAiaHR0cHM6Ly9iYWZ5YmVpZXh4eTd2cHRwdGo2eXg2cmVodjV4cDRnYTd6enRiZTJ1ZHUyZDNnYTNiZTRnc243bmt4NC5pcGZzLm5mdHN0b3JhZ2UubGluay8iLAogICAgImF0dHJpYnV0ZXMiOiBbCiAgICAgICAgewogICAgICAgICAgICAidHJhaXRfdHlwZSI6ICJwbGFjZSIsCiAgICAgICAgICAgICJ2YWx1ZSI6ICIxc3QiCiAgICAgICAgfQogICAgXQp9";
+        _safeMint(to, s_tokenCounter);
+        s_tokenIdToState[s_tokenCounter] = NFTState.COMPLETE;
+        s_tokenIdToUri[s_tokenCounter] = COMPLETE_URL;
+        s_tokenCounter = s_tokenCounter + 1;
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view

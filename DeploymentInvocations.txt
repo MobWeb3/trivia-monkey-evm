@@ -9,6 +9,7 @@ make mintGameSessionNft ARGS="--network sepolia"
 
 make mintCompleteGameSessionNftBase64 ARGS="--network sepolia"
 
+make deploySourceMinter ARGS="--network sepolia"
 
 make deployGameSessionNft ARGS="--network mumbai"
 
@@ -20,3 +21,16 @@ make deployDestinationMinter ARGS="--network mumbai"
 forge verify-contract $ADDRESS $LOCATION --chain mumbai
 
  forge verify-contract --chain-id 80001 0x094A595D7B541e5fEC91fd7B2355814A57165D0d src/GameSessionNft.sol:GameSessionNft --verifier-url https://mumbai.polygonscan.com/verifyContract --etherscan-api-key XK5ZVB1HBFNCWJQ66T83JZZN7K6H25UEXS
+
+
+make mintCompleteCrossChainNft ARGS="--network sepolia"
+
+
+latest:
+
+GameSessionNft contract on Polygon: 0x576A9EcD5BdDdB1484b4dCA856a7E6d62c36bEA8
+DestinationMinter on Polygon: 0x4f22760e6E954185124512E17dd3AD9DBF87FDB5
+SourceMinter on Sepolia: 0x12AF2324B12FFa3c7FE0324F7Be7bf8c2321A410
+
+I have to send some sepolia eth to SourceMinter
+

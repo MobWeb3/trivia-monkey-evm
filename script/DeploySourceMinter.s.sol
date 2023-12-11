@@ -22,7 +22,7 @@ contract DeploySourceMinter is Script {
 
         vm.startBroadcast(deployerKey);
         (HelperConfig.NetworkConfig memory networkConfig, HelperConfig.RouterConfig memory routerConfig) = helperConfig.getSepoliaEthConfig();
-        SourceMinter sourceMinter = new SourceMinter(address(routerConfig.address_), networkConfig.link);      
+        SourceMinter sourceMinter = new SourceMinter(routerConfig.address_, networkConfig.link);      
         vm.stopBroadcast();
 
         console.log("SourceMinter address: %s", address(sourceMinter));

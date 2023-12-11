@@ -14,7 +14,7 @@ contract HelperConfig is Script {
 
     struct RouterConfig {
         address address_;
-        string chainSelector;
+        uint64 chainSelector;
     }
 
     uint256 public DEFAULT_ANVIL_PRIVATE_KEY =
@@ -58,8 +58,8 @@ contract HelperConfig is Script {
         });
 
         sepoliaRouterConfig = RouterConfig({
-            address_: 0xD0daae2231E9CB96b94C8512223533293C3693Bf,
-            chainSelector: "16015286601757825753"
+            address_: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59,
+            chainSelector: 16015286601757825753
         });
     }
 
@@ -75,7 +75,7 @@ contract HelperConfig is Script {
 
         avalancheRouterConfig = RouterConfig({
             address_: 0x554472a2720E5E7D5D3C817529aBA05EEd5F82D8,
-            chainSelector: "14767482510784806043"
+            chainSelector: 14767482510784806043
         });
     }
 
@@ -90,8 +90,8 @@ contract HelperConfig is Script {
         });
 
         polygonMumbaiRouterConfig = RouterConfig({
-            address_: 0x70499c328e1E2a3c41108bd3730F6670a44595D1,
-            chainSelector: "12532609583862916517"
+            address_: 0x1035CabC275068e0F4b745A29CEDf38E13aF41b1,
+            chainSelector: 12532609583862916517
         });
     }
 

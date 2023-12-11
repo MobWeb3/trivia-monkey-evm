@@ -23,8 +23,8 @@ contract DeployDestinationMinter is Script {
         }
 
         HelperConfig helperConfig = new HelperConfig();
-        address mostRecentlyDeployedBasicNft = DevOpsTools
-            .get_most_recent_deployment("GameSessionNft", block.chainid);
+        // address mostRecentlyDeployedBasicNft = DevOpsTools
+        //     .get_most_recent_deployment("GameSessionNft", block.chainid);
 
         // if (mostRecentlyDeployedBasicNft == address(0)) {
         //     console.log("No GameSessionNft deployed on this chain. Attempting to deploy one now.");
@@ -37,7 +37,7 @@ contract DeployDestinationMinter is Script {
 
         vm.startBroadcast(deployerKey);
         (, HelperConfig.RouterConfig memory routerConfig) = helperConfig.getMumbaiPolygonConfig();
-        DestinationMinter destinationMinter = new DestinationMinter(address(routerConfig.address_), mostRecentlyDeployedBasicNft);      
+        DestinationMinter destinationMinter = new DestinationMinter(routerConfig.address_, address(0x576A9EcD5BdDdB1484b4dCA856a7E6d62c36bEA8));      
         vm.stopBroadcast();
 
         console.log("DestinationMinter address: %s", address(destinationMinter));

@@ -76,3 +76,6 @@ deploySourceMinter:
 
 deployDestinationMinter:
 	@forge script script/DeployDestinationMinter.s.sol:DeployDestinationMinter $(NETWORK_ARGS)
+
+mintCompleteCrossChainNft:
+	@forge script script/Interactions.s.sol:MintCompleteGameSessionCrossChain $(NETWORK_ARGS)

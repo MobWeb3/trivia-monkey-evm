@@ -6,6 +6,7 @@ import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
 import {MoodNft} from "../src/MoodNft.sol";
 import {GameSessionNft} from "../src/GameSessionNft.sol";
 import {SourceMinter} from "../src/ccip/SourceMinter.sol";
+import {HelperConfig} from "./HelperConfig.s.sol";
 
 contract DeployGameSessionNft is Script {
     string public constant ACTIVE_URI =
@@ -59,6 +60,46 @@ contract MintCompleteGameSessionNftBase64 is Script {
     function mintNftCompletedSessionOnContract(address nftAddress) public {
         vm.startBroadcast();
         GameSessionNft(nftAddress).mintNftComplete(COMPLETE_URL);
+        vm.stopBroadcast();
+    }
+}
+
+contract MintCompleteGameSessionCrossChain is Script {
+    string public constant COMPLETE_URL =
+        "data:application/json;base64,ewogICAgIm5hbWUiOiAiTW9ua2V5IFRyaXZpYSBTZXNzaW9uIENvbXBsZXRlZCIsCiAgICAiZGVzY3JpcHRpb24iOiAiR2FtZSBzZXNzaWlvbiBjb21wbGV0ZWQuICBZb3UgYXJlIGEgd2lubmVyISIsCiAgICAiaW1hZ2UiOiAiaHR0cHM6Ly9iYWZ5YmVpZXh4eTd2cHRwdGo2eXg2cmVodjV4cDRnYTd6enRiZTJ1ZHUyZDNnYTNiZTRnc243bmt4NC5pcGZzLm5mdHN0b3JhZ2UubGluay8iLAogICAgImF0dHJpYnV0ZXMiOiBbCiAgICAgICAgewogICAgICAgICAgICAidHJhaXRfdHlwZSI6ICJwbGFjZSIsCiAgICAgICAgICAgICJ2YWx1ZSI6ICIxc3QiCiAgICAgICAgfQogICAgXQp9";
+
+    uint256 deployerKey;
+
+    function run() external {
+        address mostRecentlyDeployedSourceMinter = DevOpsTools
+            .get_most_recent_deployment("SourceMinter", block.chainid);
+        mintNftCompletedSessionOnContract(mostRecentlyDeployedSourceMinter);
+        console.log("SourceMinter address: %s", mostRecentlyDeployedSourceMinter);
+    }
+
+    // function mintNftCompletedSessionOnContract(address sourceMinterAddress) public {
+    //     HelperConfig helperConfig = new HelperConfig();
+    //     (,HelperConfig.RouterConfig memory routerConfig) = helperConfig.getMumbaiPolygonConfig();
+    //     vm.startBroadcast();
+    //     /*
+    //         Fees LINK:1, NATIVE:0
+    //     */
+
+    //    // get latest sourceMinterAddress
+    //     SourceMinter(payable(sourceMinterAddress)).mint(routerConfig.chainSelector, 0x094A595D7B541e5fEC91fd7B2355814A57165D0d, SourceMinter.PayFeesIn.Native, COMPLETE_URL);
+    //     vm.stopBroadcast();
+    // }
+
+    function mintNftCompletedSessionOnContract(address sourceMinterAddress) public {
+        HelperConfig helperConfig = new HelperConfig();
+        (,HelperConfig.RouterConfig memory routerConfig) = helperConfig.getMumbaiPolygonConfig();
+        vm.startBroadcast();
+        /*
+            Fees LINK:1, NATIVE:0
+        */
+
+       // get latest sourceMinterAddress mint(chainSelector, destinationMinter, PayFeesInLinkOrNative)
+        SourceMinter(payable(0x12AF2324B12FFa3c7FE0324F7Be7bf8c2321A410)).mint(routerConfig.chainSelector, address(0x4f22760e6E954185124512E17dd3AD9DBF87FDB5), SourceMinter.PayFeesIn.Native);
         vm.stopBroadcast();
     }
 }
