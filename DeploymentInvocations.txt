@@ -25,12 +25,80 @@ forge verify-contract $ADDRESS $LOCATION --chain mumbai
 
 make mintCompleteCrossChainNft ARGS="--network sepolia"
 
+make mintCompleteXChainFujiToPolygon ARGS="--network fuji"
+
+make deployGameSessionNft ARGS="--network fuji"
+
 
 latest:
 
 GameSessionNft contract on Polygon: 0x576A9EcD5BdDdB1484b4dCA856a7E6d62c36bEA8
-DestinationMinter on Polygon: 0x4f22760e6E954185124512E17dd3AD9DBF87FDB5
-SourceMinter on Sepolia: 0x12AF2324B12FFa3c7FE0324F7Be7bf8c2321A410
+DestinationMinter on Polygon: 0xBC4cF7731Dd2c8C5fed08F21E7cFc4c292D4C8a7
+SourceMinter on Sepolia: 0x9041b59b5CCC47EFA7dfBF1497bC8bAD7AD5ad1E
 
 I have to send some sepolia eth to SourceMinter
+
+
+#sepolia to polygon mumbai
+HARDHAT
+//NFT and destination being deployed
+npx hardhat deploy-destination-minter --network polygonMumbai
+npx hardhat deploy-source-minter --network ethereumSepolia
+
+DestinatioinMinter-Polygon: 0x699cC64a4fDc0f12100c32B0f5E53b76fCaF10e1
+NFT-Polygon: 0xD7E236fDD682f38D7c66C82b62B31387C4B31933
+SourceMinter-Sepolia: 0xD3EB70a96423eD604deD7F426AA298Bac6B44C94
+
+npx hardhat cross-chain-mint \
+--source-minter 0xD3EB70a96423eD604deD7F426AA298Bac6B44C94 \
+--source-blockchain ethereumSepolia \
+--destination-blockchain polygonMumbai \
+--destination-minter 0x699cC64a4fDc0f12100c32B0f5E53b76fCaF10e1 \
+--pay-fees-in Native
+
+
+#from polygon to fujii
+HARDHAT
+//NFT and destination being deployed
+npx hardhat deploy-destination-minter --network avalancheFuji
+npx hardhat deploy-source-minter --network polygonMumbai
+
+DestinatioinMinter-fuji: 0xFa7a1032bD4ca668710aBF793A93B33122479182
+NFT-fuji: 0x98700F13001b5122b9175D30A1a65f80E375D926
+SourceMinter-polygon: 0x111521C32eD0DFEDD2E6DE1988EEd56e6576A7A0
+
+send around 0.32 link
+sent 4 link:
+previouse balance: 4010511384615384616 
+post balance: 
+
+npx hardhat cross-chain-mint \
+--source-minter 0x111521C32eD0DFEDD2E6DE1988EEd56e6576A7A0 \
+--source-blockchain polygonMumbai \
+--destination-blockchain avalancheFuji \
+--destination-minter 0xFa7a1032bD4ca668710aBF793A93B33122479182 \
+--pay-fees-in LINK
+
+
+#source fuji, destination sepolia
+HARDHAT
+//NFT and destination being deployed
+npx hardhat deploy-destination-minter --network ethereumSepolia
+npx hardhat deploy-source-minter --network avalancheFuji
+
+DestinatioinMinter-sepolia: 0x4f4fdCC3E60b6CB317Dd5907c185beA8cb4F50B6
+NFT-fuji: 0xA573280df090B7B6816B71fa6430868BAC02144b
+SourceMinter-fuji: 0xe03E02481Ed35ffF7677EAE84Fcee029e85538e5
+
+npx hardhat cross-chain-mint \
+--source-minter 0xe03E02481Ed35ffF7677EAE84Fcee029e85538e5 \
+--source-blockchain avalancheFuji \
+--destination-blockchain ethereumSepolia \
+--destination-minter 0x4f4fdCC3E60b6CB317Dd5907c185beA8cb4F50B6 \
+--pay-fees-in Native
+
+
+
+
+
 

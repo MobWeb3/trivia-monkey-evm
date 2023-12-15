@@ -9,22 +9,20 @@ import {DevOpsTools} from "foundry-devops/src/DevOpsTools.sol";
 import {GameSessionNft} from "../src/GameSessionNft.sol";
 
 contract DeployDestinationMinter is Script {
-    uint256 public DEFAULT_ANVIL_PRIVATE_KEY =
-        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+    uint256 public DEFAULT_ANVIL_PRIVATE_KEY = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
     uint256 public deployerKey;
 
     function run() external returns (DestinationMinter) {
         if (block.chainid == 31337) {
             deployerKey = DEFAULT_ANVIL_PRIVATE_KEY;
-        }
-        else {
+        } else {
             deployerKey = vm.envUint("PRIVATE_KEY");
             console.log("deployerKey: %s", deployerKey);
         }
 
         HelperConfig helperConfig = new HelperConfig();
-        // address mostRecentlyDeployedBasicNft = DevOpsTools
-        //     .get_most_recent_deployment("GameSessionNft", block.chainid);
+        address mostRecentlyDeployedBasicNft = DevOpsTools
+            .get_most_recent_deployment("GameSessionNft", block.chainid);
 
         // if (mostRecentlyDeployedBasicNft == address(0)) {
         //     console.log("No GameSessionNft deployed on this chain. Attempting to deploy one now.");
@@ -36,8 +34,9 @@ contract DeployDestinationMinter is Script {
         // }
 
         vm.startBroadcast(deployerKey);
-        (, HelperConfig.RouterConfig memory routerConfig) = helperConfig.getMumbaiPolygonConfig();
-        DestinationMinter destinationMinter = new DestinationMinter(routerConfig.address_, address(0x576A9EcD5BdDdB1484b4dCA856a7E6d62c36bEA8));      
+        HelperConfig.RouterConfig memory routerConfig = helperConfig.getActiveRouterConfig();
+        DestinationMinter destinationMinter =
+            new DestinationMinter(routerConfig.address_, mostRecentlyDeployedBasicNft);
         vm.stopBroadcast();
 
         console.log("DestinationMinter address: %s", address(destinationMinter));

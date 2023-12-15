@@ -62,9 +62,38 @@ contract GameSessionNft is ERC721, Ownable {
         s_tokenCounter = s_tokenCounter + 1;
     }
 
-    function mint(address to) public {
-            string memory COMPLETE_URL =
-        "data:application/json;base64,ewogICAgIm5hbWUiOiAiTW9ua2V5IFRyaXZpYSBTZXNzaW9uIENvbXBsZXRlZCIsCiAgICAiZGVzY3JpcHRpb24iOiAiR2FtZSBzZXNzaWlvbiBjb21wbGV0ZWQuICBZb3UgYXJlIGEgd2lubmVyISIsCiAgICAiaW1hZ2UiOiAiaHR0cHM6Ly9iYWZ5YmVpZXh4eTd2cHRwdGo2eXg2cmVodjV4cDRnYTd6enRiZTJ1ZHUyZDNnYTNiZTRnc243bmt4NC5pcGZzLm5mdHN0b3JhZ2UubGluay8iLAogICAgImF0dHJpYnV0ZXMiOiBbCiAgICAgICAgewogICAgICAgICAgICAidHJhaXRfdHlwZSI6ICJwbGFjZSIsCiAgICAgICAgICAgICJ2YWx1ZSI6ICIxc3QiCiAgICAgICAgfQogICAgXQp9";
+    function mintWithTokenUri(address to, string memory tokenUri) external {
+        _safeMint(to, s_tokenCounter);
+        s_tokenIdToState[s_tokenCounter] = NFTState.COMPLETE;
+        s_tokenIdToUri[s_tokenCounter] = tokenUri;
+        s_tokenCounter = s_tokenCounter + 1;
+    }
+
+    function _baseURI() internal pure override returns (string memory) {
+        return "data:application/json;base64,";
+    }
+    
+   function mint(address to, string memory sessionId) external {
+        string memory COMPLETE_URL =string(
+            abi.encodePacked(
+                _baseURI(),
+                Base64.encode(
+                    bytes( // bytes casting actually unnecessary as 'abi.encodePacked()' returns a bytes
+                        abi.encodePacked(
+                            '{"name":"',
+                            'Monkey Trivia Session Completed',
+                            '", "description":"Game sessiion completed.  You are a winner!"',
+                            ', "attributes": [{"trait_type": "place", "value": "1st"}, {"trait_type": "sessionId", "value":"',
+                            sessionId,
+                             '"}], "image":"',
+                            'https://bafybeiexxy7vptptj6yx6rehv5xp4ga7zztbe2udu2d3ga3be4gsn7nkx4.ipfs.nftstorage.link/',
+                            '"}'
+                        )
+                    )
+                )
+            )
+        );
+        
         _safeMint(to, s_tokenCounter);
         s_tokenIdToState[s_tokenCounter] = NFTState.COMPLETE;
         s_tokenIdToUri[s_tokenCounter] = COMPLETE_URL;

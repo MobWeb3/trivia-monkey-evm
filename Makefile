@@ -43,8 +43,8 @@ ifeq ($(findstring --network mumbai,$(ARGS)),--network mumbai)
     NETWORK_ARGS := --rpc-url $(MUMBAI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(POLYGONSCAN_API_KEY) -vvvv
 endif
 
-ifeq ($(findstring --network fuji,$(ARGS)),--network avalanche)
-    NETWORK_ARGS := --rpc-url $(AVALANCHE_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+ifeq ($(findstring --network fuji,$(ARGS)),--network fuji)
+    NETWORK_ARGS := --rpc-url $(FUJI_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast --verify --etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
 endif
 
 deploy:
@@ -77,5 +77,8 @@ deploySourceMinter:
 deployDestinationMinter:
 	@forge script script/DeployDestinationMinter.s.sol:DeployDestinationMinter $(NETWORK_ARGS)
 
-mintCompleteCrossChainNft:
-	@forge script script/Interactions.s.sol:MintCompleteGameSessionCrossChain $(NETWORK_ARGS)
+mintCompleteXChainSepoliaToPolygon:
+	@forge script script/Interactions.s.sol:MintCompleteXChainSepoliaToPolygon $(NETWORK_ARGS)
+
+mintCompleteXChainPolygonToFuji:
+	@forge script script/Interactions.s.sol:MintNftCompletedSessionPolygonToFuji $(NETWORK_ARGS)

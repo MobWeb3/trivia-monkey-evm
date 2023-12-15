@@ -7,6 +7,7 @@ import {Script} from "forge-std/Script.sol";
 
 contract HelperConfig is Script {
     NetworkConfig public activeNetworkConfig;
+    RouterConfig public activeRouterConfig;
 
     struct NetworkConfig {
         address link;
@@ -17,82 +18,66 @@ contract HelperConfig is Script {
         uint64 chainSelector;
     }
 
-    uint256 public DEFAULT_ANVIL_PRIVATE_KEY =
-        0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
+    uint256 public DEFAULT_ANVIL_PRIVATE_KEY = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
 
     // event HelperConfig__CreatedMockVRFCoordinator(address vrfCoordinator);
 
     constructor() {
         if (block.chainid == 11155111) {
-            (activeNetworkConfig, ) = getSepoliaEthConfig();
-        } 
-        else if (block.chainid == 43113) {
-            (activeNetworkConfig, ) = getFujiAvalancheConfig();
-        }
-        else if (block.chainid == 80001) {
-            (activeNetworkConfig, ) = getMumbaiPolygonConfig();
-        }
-        else {
+            (activeNetworkConfig, activeRouterConfig) = getSepoliaEthConfig();
+        } else if (block.chainid == 43113) {
+            (activeNetworkConfig, activeRouterConfig) = getFujiAvalancheConfig();
+        } else if (block.chainid == 80001) {
+            (activeNetworkConfig, activeRouterConfig) = getMumbaiPolygonConfig();
+        } else {
             // activeNetworkConfig = getOrCreateAnvilEthConfig();
+            (activeNetworkConfig, activeRouterConfig) = getSepoliaEthConfig();
         }
     }
 
-    function getMainnetEthConfig()
-        public
-        pure
-        returns (NetworkConfig memory mainnetNetworkConfig)
-    {
-        mainnetNetworkConfig = NetworkConfig({
-            link: 0x514910771AF9Ca656af840dff83E8264EcF986CA
-        });
+    function getMainnetEthConfig() public pure returns (NetworkConfig memory mainnetNetworkConfig) {
+        mainnetNetworkConfig = NetworkConfig({link: 0x514910771AF9Ca656af840dff83E8264EcF986CA});
+    }
+
+    function getActiveNetworkConfig() public view returns (NetworkConfig memory) {
+        return activeNetworkConfig;
+    }
+
+    function getActiveRouterConfig() public view returns (RouterConfig memory) {
+        return activeRouterConfig;
     }
 
     function getSepoliaEthConfig()
         public
         pure
-        returns (NetworkConfig memory sepoliaNetworkConfig,
-            RouterConfig memory sepoliaRouterConfig)
+        returns (NetworkConfig memory sepoliaNetworkConfig, RouterConfig memory sepoliaRouterConfig)
     {
-        sepoliaNetworkConfig = NetworkConfig({
-            link: 0x779877A7B0D9E8603169DdbD7836e478b4624789
-        });
+        sepoliaNetworkConfig = NetworkConfig({link: 0x779877A7B0D9E8603169DdbD7836e478b4624789});
 
-        sepoliaRouterConfig = RouterConfig({
-            address_: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59,
-            chainSelector: 16015286601757825753
-        });
+        sepoliaRouterConfig =
+            RouterConfig({address_: 0x0BF3dE8c5D3e8A2B34D2BEeB17ABfCeBaf363A59, chainSelector: 16015286601757825753});
     }
 
     function getFujiAvalancheConfig()
         public
         pure
-        returns (NetworkConfig memory avalancheFujiNetworkConfig,
-            RouterConfig memory avalancheRouterConfig)
+        returns (NetworkConfig memory avalancheFujiNetworkConfig, RouterConfig memory avalancheRouterConfig)
     {
-        avalancheFujiNetworkConfig = NetworkConfig({
-            link: 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846
-        });
+        avalancheFujiNetworkConfig = NetworkConfig({link: 0x0b9d5D9136855f6FEc3c0993feE6E9CE8a297846});
 
-        avalancheRouterConfig = RouterConfig({
-            address_: 0x554472a2720E5E7D5D3C817529aBA05EEd5F82D8,
-            chainSelector: 14767482510784806043
-        });
+        avalancheRouterConfig =
+            RouterConfig({address_: 0xF694E193200268f9a4868e4Aa017A0118C9a8177, chainSelector: 14767482510784806043});
     }
 
-        function getMumbaiPolygonConfig()
+    function getMumbaiPolygonConfig()
         public
         pure
-        returns (NetworkConfig memory polygonMumbaiNetworkConfig,
-            RouterConfig memory polygonMumbaiRouterConfig)
+        returns (NetworkConfig memory polygonMumbaiNetworkConfig, RouterConfig memory polygonMumbaiRouterConfig)
     {
-        polygonMumbaiNetworkConfig = NetworkConfig({
-            link: 0x326C977E6efc84E512bB9C30f76E30c160eD06FB
-        });
+        polygonMumbaiNetworkConfig = NetworkConfig({link: 0x326C977E6efc84E512bB9C30f76E30c160eD06FB});
 
-        polygonMumbaiRouterConfig = RouterConfig({
-            address_: 0x1035CabC275068e0F4b745A29CEDf38E13aF41b1,
-            chainSelector: 12532609583862916517
-        });
+        polygonMumbaiRouterConfig =
+            RouterConfig({address_: 0x1035CabC275068e0F4b745A29CEDf38E13aF41b1, chainSelector: 12532609583862916517});
     }
 
     // function getOrCreateAnvilEthConfig()
