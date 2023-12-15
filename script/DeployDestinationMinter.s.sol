@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity 0.8.20;
 
 import {Script} from "forge-std/Script.sol";
 import {DestinationMinter} from "../src/ccip/DestinationMinter.sol";
@@ -20,7 +20,7 @@ contract DeployDestinationMinter is Script {
             console.log("deployerKey: %s", deployerKey);
         }
 
-        HelperConfig helperConfig = new HelperConfig();
+
         address mostRecentlyDeployedBasicNft = DevOpsTools
             .get_most_recent_deployment("GameSessionNft", block.chainid);
 
@@ -33,8 +33,12 @@ contract DeployDestinationMinter is Script {
         //     vm.stopBroadcast();
         // }
 
-        vm.startBroadcast(deployerKey);
+        // print most recently deployed basic nft
+        console.log("Most recendly deployed GameSessionNft: %s", mostRecentlyDeployedBasicNft);
+        
+        HelperConfig helperConfig = new HelperConfig();
         HelperConfig.RouterConfig memory routerConfig = helperConfig.getActiveRouterConfig();
+        vm.startBroadcast(deployerKey);
         DestinationMinter destinationMinter =
             new DestinationMinter(routerConfig.address_, mostRecentlyDeployedBasicNft);
         vm.stopBroadcast();

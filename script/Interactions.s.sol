@@ -108,13 +108,14 @@ contract MintNftCompletedSessionPolygonToFuji is Script {
     function mintNftCompletedSessionPolygonToFuji() public {
         HelperConfig helperConfig = new HelperConfig();
         (HelperConfig.NetworkConfig memory networkConfig ,HelperConfig.RouterConfig memory routerConfig) = helperConfig.getMumbaiPolygonConfig();
+        (HelperConfig.NetworkConfig memory destinationNetworkConfig ,HelperConfig.RouterConfig memory destinationRouterConfig) = helperConfig.getFujiAvalancheConfig();
         vm.startBroadcast();
 
-        address mostRecentlyDeployedSourceMinter = DevOpsTools
-            .get_most_recent_deployment("SourceMinter", block.chainid);
+        address mostRecentlyDeployedSourceMinter = DevOpsTools 
+            .get_most_recent_deployment("SourceMinter", 80001);
 
         address mostRecentlyDeployedDestinationMinter = DevOpsTools
-            .get_most_recent_deployment("DestinationMinter", block.chainid);
+            .get_most_recent_deployment("DestinationMinter", 43113);
 
         console.log("Link address: %s", networkConfig.link);
 
@@ -123,10 +124,10 @@ contract MintNftCompletedSessionPolygonToFuji is Script {
         console.log("Link balance: %s", balance);
         //if link balance is less than 0.4, send 0.4 link to SourceMinter
         if(balance < 400000000000000000){            
-            LinkTokenInterface(networkConfig.link).transferFrom(msg.sender, mostRecentlyDeployedSourceMinter, 400000000000000000);
-            //print tx hash
-
-            console.log("sending 0.4 link to SourceMinter, Try again!"); return;
+            // LinkTokenInterface(networkConfig.link).transferFrom(msg.sender, mostRecentlyDeployedSourceMinter, 400000000000000000);
+        //     //print tx hash
+            console.log ("SourceMinter address: %s", mostRecentlyDeployedSourceMinter);
+            console.log("Not enough link! 0.4 Link needed by SourceMinter, Try again!"); return;
         }
 
         // send 0.4 link to SourceMinter
@@ -135,7 +136,7 @@ contract MintNftCompletedSessionPolygonToFuji is Script {
 
        // get latest sourceMinterAddress mint(chainSelector, destinationMinter, PayFeesInLinkOrNative)
         SourceMinter(payable(mostRecentlyDeployedSourceMinter)).mint(
-            routerConfig.chainSelector,
+            destinationRouterConfig.chainSelector,
             address(mostRecentlyDeployedDestinationMinter), 
             SourceMinter.PayFeesIn.LINK,
             COMPLETE_URL
