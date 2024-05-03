@@ -29,6 +29,8 @@ contract HelperConfig is Script {
             (activeNetworkConfig, activeRouterConfig) = getFujiAvalancheConfig();
         } else if (block.chainid == 80001) {
             (activeNetworkConfig, activeRouterConfig) = getMumbaiPolygonConfig();
+        } else if (block.chainid == 84532) {
+            (activeNetworkConfig, activeRouterConfig) = getBaseTestnetConfig();
         } else {
             // activeNetworkConfig = getOrCreateAnvilEthConfig();
             (activeNetworkConfig, activeRouterConfig) = getSepoliaEthConfig();
@@ -78,6 +80,17 @@ contract HelperConfig is Script {
 
         polygonMumbaiRouterConfig =
             RouterConfig({address_: 0x1035CabC275068e0F4b745A29CEDf38E13aF41b1, chainSelector: 12532609583862916517});
+    }
+
+    function getBaseTestnetConfig()
+        public
+        pure
+        returns (NetworkConfig memory baseTestnetNetworkConfig, RouterConfig memory baseTestnetRouterConfig)
+    {
+        baseTestnetNetworkConfig = NetworkConfig({link: 0xE4aB69C077896252FAFBD49EFD26B5D171A32410});
+
+        baseTestnetRouterConfig =
+            RouterConfig({address_: 0xD3b06cEbF099CE7DA4AcCf578aaebFDBd6e88a93, chainSelector: 10344971235874465080});
     }
 
     // function getOrCreateAnvilEthConfig()

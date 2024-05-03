@@ -144,3 +144,57 @@ contract MintNftCompletedSessionPolygonToFuji is Script {
         vm.stopBroadcast();
     }
 }
+
+
+contract MintNftCompletedSessionEthSepoliaToBase is Script {
+    string public constant COMPLETE_URL =
+        "data:application/json;base64,ewogICAgIm5hbWUiOiAiTW9ua2V5IFRyaXZpYSBTZXNzaW9uIENvbXBsZXRlZCIsCiAgICAiZGVzY3JpcHRpb24iOiAiR2FtZSBzZXNzaWlvbiBjb21wbGV0ZWQuICBZb3UgYXJlIGEgd2lubmVyISIsCiAgICAiaW1hZ2UiOiAiaHR0cHM6Ly9iYWZ5YmVpZXh4eTd2cHRwdGo2eXg2cmVodjV4cDRnYTd6enRiZTJ1ZHUyZDNnYTNiZTRnc243bmt4NC5pcGZzLm5mdHN0b3JhZ2UubGluay8iLAogICAgImF0dHJpYnV0ZXMiOiBbCiAgICAgICAgewogICAgICAgICAgICAidHJhaXRfdHlwZSI6ICJwbGFjZSIsCiAgICAgICAgICAgICJ2YWx1ZSI6ICIxc3QiCiAgICAgICAgfQogICAgXQp9";
+
+    uint256 deployerKey;
+
+    function run() external {
+        // address mostRecentlyDeployedSourceMinter = DevOpsTools
+        //     .get_most_recent_deployment("SourceMinter", block.chainid);
+        mintNftCompletedSessionEthSepoliaToBase();
+        // console.log("SourceMinter address: %s", mostRecentlyDeployedSourceMinter);
+    }
+
+    function mintNftCompletedSessionEthSepoliaToBase() public {
+        HelperConfig helperConfig = new HelperConfig();
+        (HelperConfig.NetworkConfig memory networkConfig, HelperConfig.RouterConfig memory routerConfig) = helperConfig.getSepoliaEthConfig();
+        (HelperConfig.NetworkConfig memory destinationNetworkConfig, HelperConfig.RouterConfig memory destinationRouterConfig) = helperConfig.getBaseTestnetConfig();
+        vm.startBroadcast();
+
+        address mostRecentlyDeployedSourceMinter = DevOpsTools 
+            .get_most_recent_deployment("SourceMinter", 11155111);
+
+        address mostRecentlyDeployedDestinationMinter = DevOpsTools
+            .get_most_recent_deployment("DestinationMinter", 84532);
+
+        console.log("Link address: %s", networkConfig.link);
+
+        uint balance = LinkTokenInterface(networkConfig.link).balanceOf(mostRecentlyDeployedSourceMinter);
+
+        console.log("Link balance: %s", balance);
+        //if link balance is less than 0.4, send 0.4 link to SourceMinter
+        if(balance < (0.4 * 10**18)){            
+            // LinkTokenInterface(networkConfig.link).transferFrom(msg.sender, mostRecentlyDeployedSourceMinter, 400000000000000000);
+        //     //print tx hash
+            console.log ("SourceMinter address: %s", mostRecentlyDeployedSourceMinter);
+            console.log("Not enough link! 0.4 Link needed by SourceMinter, Try again!"); return;
+        }
+
+        // send 0.4 link to SourceMinter
+        // LinkTokenInterface(networkConfig.link).transferFrom(msg.sender, mostRecentlyDeployedSourceMinter, 400000000000000000);
+        // console.log("Link balance: %s", LinkTokenInterface(networkConfig.link).balanceOf(mostRecentlyDeployedSourceMinter));
+
+       // get latest sourceMinterAddress mint(chainSelector, destinationMinter, PayFeesInLinkOrNative)
+        SourceMinter(payable(mostRecentlyDeployedSourceMinter)).mint(
+            destinationRouterConfig.chainSelector,
+            address(0xA75b12AEE788814e3AdA413EB58b7a844f0D75A3), 
+            SourceMinter.PayFeesIn.LINK,
+            COMPLETE_URL
+        );
+        vm.stopBroadcast();
+    }
+}

@@ -47,6 +47,10 @@ ifeq ($(findstring --network fuji,$(ARGS)),--network fuji)
     NETWORK_ARGS := --rpc-url $(FUJI_CCHAIN_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast  -vv
 endif
 
+ifeq ($(findstring --network baseSepolia,$(ARGS)),--network baseSepolia)
+    NETWORK_ARGS := --fork-url $(BASE_SEPOLIA_RPC_URL) --private-key $(PRIVATE_KEY) --broadcast  -v
+endif
+
 deploy:
 	@forge script script/DeployBasicNft.s.sol:DeployBasicNft $(NETWORK_ARGS)
 
@@ -82,3 +86,6 @@ mintCompleteXChainSepoliaToPolygon:
 
 mintCompleteXChainPolygonToFuji:
 	@forge script script/Interactions.s.sol:MintNftCompletedSessionPolygonToFuji $(NETWORK_ARGS)
+
+mintNftCompletedSessionEthSepoliaToBase:
+	@forge script script/Interactions.s.sol:MintNftCompletedSessionEthSepoliaToBase $(NETWORK_ARGS)
